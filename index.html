@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="fr">
+  <head>
+    <meta charset="utf-8">
+    <title>OpenWeather</title>
+  </head>
+  <body>
+    <form>
+        <h2> Hey mon ami ! Saisis le nom d'une ville pour connaître la météo ! </h2>
+        <input id='ville', type="text", value='Bordeaux'>
+        <input id='btn', type="button", value='GO', onClick='recherche()'>
+    </form>
+    
+    <div class="content" id="weather">
+    
+    </div>
+   
+    <script>
+      var ville = document.querySelector('#ville').value;
+      var key = 'de8bd6d7f5e836f16f4f4bfbe0b0f87d';
+      
+      recherche = function() {
+        ville = document.querySelector('#ville').value;
+        updateDisplay(ville);
+      };
+
+      function updateDisplay(ville) {
+       
+        var url = `http://api.openweathermap.org/data/2.5/weather?q=${ville}&appid=${key}`;
+        
+        var myFetch = fetch(url);
+        myFetch.then(function(response) {
+          if(response.ok){
+              response.json().then(function(json) {
+                var temp = parseFloat(json.main.temp-272).toFixed(1);
+                var icon = json['weather'][0]['icon'];
+                // build a block of html 
+                const weatherPage =`
+                <p><strong>Température: ${temp} °C</strong></p> 
+                <img src= "http://openweathermap.org/img/w/${icon}.png" alt="Icon depicting current weather." /> 
+                `;   
+                document.querySelector('#weather').innerHTML = weatherPage;
+                });
+          }else{
+            console.log('Network request for openweathermap failed with response ' + response.status + ': ' + response.statusText);
+          }
+        });
+      };
+
+      
+
+
+    </script>
+  </body>
+</html>
